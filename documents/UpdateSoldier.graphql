@@ -1,0 +1,12 @@
+mutation UpdateSoldier($measurementId: ID!, $datetime: DateTime!, $pozyxId: ID!, $x: Int!, $y: Int!, $pupilId: ID!, $degrees: Int!) {
+  position: postMeasurement(input: {soldierPosition: {measurementId: $measurementId, time: $datetime, deviceId: $pozyxId, x: $x, y: $y, z: 0}}) {
+    measurements {
+      __typename
+    }
+  }
+  headPosition: postMeasurement(input: {headPosition: {measurementId: $measurementId, time: $datetime, deviceId: $pupilId, degrees: $degrees}}) {
+    measurements {
+      __typename
+    }
+  }
+}

@@ -1,0 +1,23 @@
+fragment targetHitDetection on TargetHitDetection {
+    time
+    device {
+        type
+        deviceId
+    }
+    zone
+}
+
+fragment dronePosition on DronePosition {
+    time
+    device {
+      type
+    }
+    x, y, z
+}
+  
+subscription {
+  events {
+    ...targetHitDetection
+    ...dronePosition
+  }
+}

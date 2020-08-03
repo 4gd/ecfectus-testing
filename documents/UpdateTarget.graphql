@@ -1,0 +1,5 @@
+mutation UpdateTargetTwist($actuationId: ID!, $datetime: DateTime!, $deviceId: ID!, $degrees: Int!) {
+  actuate(input: {targetTwist: {actuationId: $actuationId, time: $datetime, deviceId: $deviceId, degrees: $degrees}}) {
+    actuations: __typename
+  }
+}

@@ -1,0 +1,7 @@
+mutation EndSession($sessionId: ID!) {
+  endSession(input: {
+    sessionId: $sessionId
+  }) {
+    session: __typename
+  }
+}

@@ -1,0 +1,106 @@
+query GetUsers {
+  users {
+    username
+    roles
+    organization {
+      name
+    }
+    rank {
+      rankCode
+    }
+  }
+}
+
+query GetOrganizations {
+  organizations {
+    name
+    echelon
+    parent {
+      name
+    }
+    children {
+      name
+    }
+  }
+}
+
+query GetSessions {
+	sessions {
+    sessionId
+    instructor {
+      username
+    }
+    policy {
+      policyId
+      name
+      layout {
+        name
+      }
+    }
+  }
+}
+
+query GetWearables {
+  wearables {
+    wearableId
+    # devices {
+    #   deviceId
+    #   type
+    # }
+  }
+}
+
+query GetLayouts {
+  layouts {
+    layoutId
+    name
+  }
+}
+
+query GetDevices {
+  devices {
+    deviceId
+    type
+    # sensors {
+    #   measurementType
+    # }
+    # actuators {
+    #   actuationType
+    # }
+  }
+}
+
+subscription {
+    events {
+        ... on SoldierPosition {
+            time
+            device {
+                deviceId
+                type
+            }
+            trainee {
+                user { username }
+            }
+            x, y
+        }
+        ... on HeadPosition {
+            time
+            device {
+                deviceId
+                type
+            }
+            trainee {
+                user { username }
+            }
+            degrees
+        }
+        ... on TargetTwist {
+            time
+            device {
+                type
+                deviceId
+            }
+            degrees
+        }
+    }
+}

@@ -1,0 +1,840 @@
+input ActuateInput {
+  targetTwist: TargetTwistInput
+  targetDrop: TargetDropInput
+  targetFire: TargetFireInput
+  targetPlaySound: TargetPlaySoundInput
+  lightOn: LightOnInput
+  lightOff: LightOffInput
+  lightSetPower: LightSetPowerInput
+  lightStrobe: LightStrobeInput
+  speakerPlaySound: SpeakerPlaySoundInput
+}
+
+type ActuatePayload {
+  actuations: [Actuation]
+}
+
+interface Actuation {
+  actuationId: ID!
+  time: DateTime!
+  device: Device
+  session: Session
+}
+
+type Actuator {
+  """"""
+  actuationType: String!
+}
+
+input AddBookmarkInput {
+  """"""
+  sessionId: ID!
+
+  """"""
+  time: DateTime!
+}
+
+type AddBookmarkPayload {
+  bookmark: Bookmark
+}
+
+interface AssignedMeasurement {
+  measurementId: ID!
+  time: DateTime!
+  device: Device
+  session: Session
+  trainee: SessionTrainee
+}
+
+type Bookmark {
+  """"""
+  time: DateTime!
+}
+
+type CoreBodyTemperature implements Event & Measurement & AssignedMeasurement {
+  measurementId: ID!
+  time: DateTime!
+  device: Device
+  session: Session
+  trainee: SessionTrainee
+  cbt: Float!
+}
+
+input CoreBodyTemperatureInput {
+  measurementId: ID!
+  time: DateTime!
+  deviceId: ID!
+  cbt: Float!
+}
+
+"""An RFC 3339 formatted date and time in the UTC time zone."""
+scalar DateTime
+
+type Device {
+  """"""
+  deviceId: ID!
+
+  """"""
+  type: DeviceType!
+  sensors: [Sensor]
+  actuators: [Actuator]
+}
+
+enum DeviceType {
+  ARC
+  Pupil
+  Bodytrak
+  Pozyx
+  ProTargit
+  SimStrikerDetector
+  Clarius
+  Speaker
+  VirtualDrone
+  VirtualSniper
+}
+
+type DischargeDetection implements Event & Measurement & AssignedMeasurement {
+  measurementId: ID!
+  time: DateTime!
+  device: Device
+  session: Session
+  trainee: SessionTrainee
+}
+
+input DischargeDetectionInput {
+  measurementId: ID!
+  time: DateTime!
+  deviceId: ID!
+}
+
+type DronePosition implements Event & Measurement {
+  measurementId: ID!
+  time: DateTime!
+  device: Device
+  session: Session
+  x: Int!
+  y: Int!
+  z: Int!
+}
+
+input DronePositionInput {
+  measurementId: ID!
+  time: DateTime!
+  deviceId: ID!
+  x: Int!
+  y: Int!
+  z: Int!
+}
+
+enum Echelon {
+  Team
+  Crew
+  Squad
+  Section
+  Platoon
+  Detachment
+  Company
+  Battery
+  Troop
+  Battalion
+  Squadron
+  Regiment
+  Group
+  Brigade
+  Division
+  Corps
+  Army
+  ArmyGroup
+  Front
+  Region
+}
+
+input EndSessionInput {
+  """"""
+  sessionId: ID!
+}
+
+type EndSessionPayload {
+  session: Session
+}
+
+interface Event {
+  time: DateTime!
+}
+
+enum FacilityDeviceType {
+  ProTargit
+  SimStrikerDetector
+  Clarius
+  Speaker
+  VirtualDrone
+  VirtualSniper
+}
+
+type GazePosition implements Event & Measurement & AssignedMeasurement {
+  measurementId: ID!
+  time: DateTime!
+  device: Device
+  session: Session
+  trainee: SessionTrainee
+  radius: Int!
+  x: Int!
+  y: Int!
+}
+
+input GazePositionInput {
+  measurementId: ID!
+  time: DateTime!
+  deviceId: ID!
+  radius: Int!
+  x: Int!
+  y: Int!
+}
+
+type GunDirection implements Event & Measurement & AssignedMeasurement {
+  measurementId: ID!
+  time: DateTime!
+  device: Device
+  session: Session
+  trainee: SessionTrainee
+  degrees: Int!
+}
+
+input GunDirectionInput {
+  measurementId: ID!
+  time: DateTime!
+  deviceId: ID!
+  degrees: Int!
+}
+
+type GunOrientation implements Event & Measurement & AssignedMeasurement {
+  measurementId: ID!
+  time: DateTime!
+  device: Device
+  session: Session
+  trainee: SessionTrainee
+  x: Float!
+  y: Float!
+  z: Float!
+}
+
+input GunOrientationInput {
+  measurementId: ID!
+  time: DateTime!
+  deviceId: ID!
+  x: Float!
+  y: Float!
+  z: Float!
+}
+
+type HeadPosition implements Event & Measurement & AssignedMeasurement {
+  measurementId: ID!
+  time: DateTime!
+  device: Device
+  session: Session
+  trainee: SessionTrainee
+  degrees: Int!
+}
+
+input HeadPositionInput {
+  measurementId: ID!
+  time: DateTime!
+  deviceId: ID!
+  degrees: Int!
+}
+
+type HeartRateVariability implements Event & Measurement & AssignedMeasurement {
+  measurementId: ID!
+  time: DateTime!
+  device: Device
+  session: Session
+  trainee: SessionTrainee
+  hrv: Int!
+}
+
+input HeartRateVariabilityInput {
+  measurementId: ID!
+  time: DateTime!
+  deviceId: ID!
+  hrv: Int!
+}
+
+type HolsterDetection implements Event & Measurement & AssignedMeasurement {
+  measurementId: ID!
+  time: DateTime!
+  device: Device
+  session: Session
+  trainee: SessionTrainee
+}
+
+input HolsterDetectionInput {
+  measurementId: ID!
+  time: DateTime!
+  deviceId: ID!
+}
+
+type InstantaneousHeartRate implements Event & Measurement & AssignedMeasurement {
+  measurementId: ID!
+  time: DateTime!
+  device: Device
+  session: Session
+  trainee: SessionTrainee
+  hr: Int!
+}
+
+input InstantaneousHeartRateInput {
+  measurementId: ID!
+  time: DateTime!
+  deviceId: ID!
+  hr: Int!
+}
+
+type Layout {
+  """"""
+  layoutId: ID!
+
+  """"""
+  name: String!
+}
+
+type LightOff implements Event & Actuation {
+  actuationId: ID!
+  time: DateTime!
+  device: Device
+  session: Session
+}
+
+input LightOffInput {
+  actuationId: ID!
+  time: DateTime!
+  deviceId: ID!
+}
+
+type LightOn implements Event & Actuation {
+  actuationId: ID!
+  time: DateTime!
+  device: Device
+  session: Session
+}
+
+input LightOnInput {
+  actuationId: ID!
+  time: DateTime!
+  deviceId: ID!
+}
+
+type LightSetPower implements Event & Actuation {
+  actuationId: ID!
+  time: DateTime!
+  device: Device
+  session: Session
+  level: Int!
+}
+
+input LightSetPowerInput {
+  actuationId: ID!
+  time: DateTime!
+  deviceId: ID!
+  level: Int!
+}
+
+type LightStrobe implements Event & Actuation {
+  actuationId: ID!
+  time: DateTime!
+  device: Device
+  session: Session
+  mode: Boolean!
+}
+
+input LightStrobeInput {
+  actuationId: ID!
+  time: DateTime!
+  deviceId: ID!
+  mode: Boolean!
+}
+
+type MagChangeDetection implements Event & Measurement & AssignedMeasurement {
+  measurementId: ID!
+  time: DateTime!
+  device: Device
+  session: Session
+  trainee: SessionTrainee
+}
+
+input MagChangeDetectionInput {
+  measurementId: ID!
+  time: DateTime!
+  deviceId: ID!
+}
+
+type ManDownDetection implements Event & Measurement & AssignedMeasurement {
+  measurementId: ID!
+  time: DateTime!
+  device: Device
+  session: Session
+  trainee: SessionTrainee
+}
+
+input ManDownDetectionInput {
+  measurementId: ID!
+  time: DateTime!
+  deviceId: ID!
+}
+
+interface Measurement {
+  measurementId: ID!
+  time: DateTime!
+  device: Device
+  session: Session
+}
+
+type Mutation {
+  registerOrganization(input: RegisterOrganizationInput!): RegisterOrganizationPayload
+  registerUser(input: RegisterUserInput!): RegisterUserPayload
+  registerWearable(input: RegisterWearableInput!): RegisterWearablePayload
+  registerDevice(input: RegisterDeviceInput!): RegisterDevicePayload
+  registerLayout(input: RegisterLayoutInput!): RegisterLayoutPayload
+  registerPolicy(input: RegisterPolicyInput!): RegisterPolicyPayload
+  startSession(input: StartSessionInput!): StartSessionPayload
+  endSession(input: EndSessionInput!): EndSessionPayload
+  addBookmark(input: AddBookmarkInput!): AddBookmarkPayload
+  postMeasurement(input: PostMeasurementInput!): PostMeasurementPayload
+  actuate(input: ActuateInput!): ActuatePayload
+}
+
+type Organization {
+  """"""
+  name: String!
+  echelon: Echelon!
+  parent: Organization
+  children: [Organization]
+}
+
+type PhysiologicalStrainIndex implements Event & Measurement & AssignedMeasurement {
+  measurementId: ID!
+  time: DateTime!
+  device: Device
+  session: Session
+  trainee: SessionTrainee
+  psi: Float!
+}
+
+input PhysiologicalStrainIndexInput {
+  measurementId: ID!
+  time: DateTime!
+  deviceId: ID!
+  psi: Float!
+}
+
+type Policy {
+  """"""
+  policyId: ID!
+
+  """"""
+  name: String!
+  layout: Layout
+}
+
+input PostMeasurementInput {
+  instantaneousHeartRate: InstantaneousHeartRateInput
+  heartRateVariability: HeartRateVariabilityInput
+  coreBodyTemperature: CoreBodyTemperatureInput
+  physiologicalStrainIndex: PhysiologicalStrainIndexInput
+  manDownDetection: ManDownDetectionInput
+  gazePosition: GazePositionInput
+  headPosition: HeadPositionInput
+  gunDirection: GunDirectionInput
+  gunOrientation: GunOrientationInput
+  dischargeDetection: DischargeDetectionInput
+  holsterDetection: HolsterDetectionInput
+  magChangeDetection: MagChangeDetectionInput
+  soldierPosition: SoldierPositionInput
+  targetHitDetection: TargetHitDetectionInput
+  targetMotionDetection: TargetMotionDetectionInput
+  targetSoundDetection: TargetSoundDetectionInput
+  targetFlashBangDetection: TargetFlashBangDetectionInput
+  dronePosition: DronePositionInput
+  sniperPosition: SniperPositionInput
+}
+
+type PostMeasurementPayload {
+  measurements: [Measurement]
+}
+
+type Query {
+  ranks: [Rank]
+  organizations: [Organization]
+  users(username: String): [User]
+  devices(deviceId: ID, type: DeviceType): [Device]
+  wearables(wearableId: ID): [Wearable]
+  layouts(layoutId: ID): [Layout]
+  policies(policyId: ID): [Policy]
+  sessions(sessionId: ID): [Session]
+}
+
+type Rank {
+  rankCode: RankCode!
+
+  """"""
+  name: String!
+
+  """"""
+  abbreviation: String!
+}
+
+enum RankCode {
+  Brig
+  CSgt
+  Capt
+  Col
+  Cpl
+  FdMshl
+  Gen
+  LCpl
+  Lt
+  Lt2
+  LtCol
+  LtGen
+  Maj
+  MajGen
+  OCdt
+  Pte
+  SSgt
+  Sgt
+  WO1
+  WO2
+}
+
+input RegisterDeviceInput {
+  """"""
+  deviceId: ID!
+  type: FacilityDeviceType
+}
+
+type RegisterDevicePayload {
+  device: Device
+}
+
+input RegisterLayoutInput {
+  """"""
+  layoutId: ID!
+
+  """"""
+  name: String!
+}
+
+type RegisterLayoutPayload {
+  layout: Layout
+}
+
+input RegisterOrganizationInput {
+  """"""
+  name: String!
+  echelon: Echelon!
+  parent: String
+}
+
+type RegisterOrganizationPayload {
+  organization: Organization
+}
+
+input RegisterPolicyInput {
+  """"""
+  policyId: ID!
+
+  """"""
+  name: String!
+
+  """"""
+  layoutId: ID!
+}
+
+type RegisterPolicyPayload {
+  policy: Policy
+}
+
+input RegisterUserInput {
+  """"""
+  username: String!
+
+  """"""
+  name: String!
+  organization: String
+  rankCode: RankCode
+  roles: [UserRole!]!
+}
+
+type RegisterUserPayload {
+  user: User
+}
+
+input RegisterWearableInput {
+  """"""
+  wearableId: ID!
+}
+
+type RegisterWearablePayload {
+  wearable: Wearable
+}
+
+type Sensor {
+  """"""
+  measurementType: String!
+}
+
+type Session {
+  """"""
+  sessionId: ID!
+
+  """"""
+  startTime: DateTime!
+
+  """"""
+  endTime: DateTime
+
+  """"""
+  instructor: User
+  policy: Policy
+  layout: Layout
+  trainees: [SessionTrainee]
+  bookmarks: [Bookmark]
+}
+
+type SessionTrainee {
+  user: User
+  wearable: Wearable
+}
+
+input SessionTraineeInput {
+  """"""
+  username: String!
+
+  """"""
+  wearableId: ID!
+}
+
+type SniperPosition implements Event & Measurement {
+  measurementId: ID!
+  time: DateTime!
+  device: Device
+  session: Session
+  x: Int!
+  y: Int!
+  z: Int!
+}
+
+input SniperPositionInput {
+  measurementId: ID!
+  time: DateTime!
+  deviceId: ID!
+  x: Int!
+  y: Int!
+  z: Int!
+}
+
+type SoldierPosition implements Event & Measurement & AssignedMeasurement {
+  measurementId: ID!
+  time: DateTime!
+  device: Device
+  session: Session
+  trainee: SessionTrainee
+  x: Int!
+  y: Int!
+  z: Int!
+}
+
+input SoldierPositionInput {
+  measurementId: ID!
+  time: DateTime!
+  deviceId: ID!
+  x: Int!
+  y: Int!
+  z: Int!
+}
+
+type SpeakerPlaySound implements Event & Actuation {
+  actuationId: ID!
+  time: DateTime!
+  device: Device
+  session: Session
+  name: String!
+}
+
+input SpeakerPlaySoundInput {
+  actuationId: ID!
+  time: DateTime!
+  deviceId: ID!
+  name: String!
+}
+
+input StartSessionInput {
+  """"""
+  sessionId: ID!
+
+  """"""
+  policyId: ID!
+
+  """"""
+  instructor: String!
+  trainees: [SessionTraineeInput!]!
+}
+
+type StartSessionPayload {
+  session: Session
+}
+
+type Subscription {
+  events: Event
+}
+
+type SystemEvent implements Event {
+  time: DateTime!
+  type: SystemEventType!
+}
+
+enum SystemEventType {
+  SubscriptionReady
+}
+
+type TargetDrop implements Event & Actuation {
+  actuationId: ID!
+  time: DateTime!
+  device: Device
+  session: Session
+}
+
+input TargetDropInput {
+  actuationId: ID!
+  time: DateTime!
+  deviceId: ID!
+}
+
+type TargetFire implements Event & Actuation {
+  actuationId: ID!
+  time: DateTime!
+  device: Device
+  session: Session
+  timeMillis: Int!
+}
+
+input TargetFireInput {
+  actuationId: ID!
+  time: DateTime!
+  deviceId: ID!
+  timeMillis: Int!
+}
+
+type TargetFlashBangDetection implements Event & Measurement {
+  measurementId: ID!
+  time: DateTime!
+  device: Device
+  session: Session
+}
+
+input TargetFlashBangDetectionInput {
+  measurementId: ID!
+  time: DateTime!
+  deviceId: ID!
+}
+
+type TargetHitDetection implements Event & Measurement {
+  measurementId: ID!
+  time: DateTime!
+  device: Device
+  session: Session
+  zone: Int!
+}
+
+input TargetHitDetectionInput {
+  measurementId: ID!
+  time: DateTime!
+  deviceId: ID!
+  zone: Int!
+}
+
+type TargetMotionDetection implements Event & Measurement {
+  measurementId: ID!
+  time: DateTime!
+  device: Device
+  session: Session
+}
+
+input TargetMotionDetectionInput {
+  measurementId: ID!
+  time: DateTime!
+  deviceId: ID!
+}
+
+type TargetPlaySound implements Event & Actuation {
+  actuationId: ID!
+  time: DateTime!
+  device: Device
+  session: Session
+  name: String!
+}
+
+input TargetPlaySoundInput {
+  actuationId: ID!
+  time: DateTime!
+  deviceId: ID!
+  name: String!
+}
+
+type TargetSoundDetection implements Event & Measurement {
+  measurementId: ID!
+  time: DateTime!
+  device: Device
+  session: Session
+  level: Float!
+}
+
+input TargetSoundDetectionInput {
+  measurementId: ID!
+  time: DateTime!
+  deviceId: ID!
+  level: Float!
+}
+
+type TargetTwist implements Event & Actuation {
+  actuationId: ID!
+  time: DateTime!
+  device: Device
+  session: Session
+  degrees: Int!
+}
+
+input TargetTwistInput {
+  actuationId: ID!
+  time: DateTime!
+  deviceId: ID!
+  degrees: Int!
+}
+
+type User {
+  """"""
+  username: String!
+
+  """"""
+  name: String!
+  rank: Rank
+  organization: Organization
+
+  """"""
+  enabled: Boolean!
+  roles: [UserRole!]
+}
+
+enum UserRole {
+  Instructor
+  Trainee
+  Admin
+}
+
+type Wearable {
+  """"""
+  wearableId: ID!
+
+  """"""
+  enabled: Boolean!
+  devices: [Device!]
+}

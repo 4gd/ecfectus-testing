@@ -1,0 +1,115 @@
+# This seems pretty awful... For testing purposes guess it's ok.
+# Tried to make it less monolithic with fragments etc but couldn't manage it.
+mutation CreateAllAndStartSession($sessionId: ID!) {
+  registerLayout(input: {
+    layoutId: "testLayout_01"
+    name: "Test Layout 01"
+  }) {
+    __typename
+  }
+  registerPolicy(input: {
+    policyId: "testPolicy_01"
+    name: "Test Policy 01"
+    layoutId: "testLayout_01"
+  }) {
+    __typename
+  }
+  gandalf: registerUser(input: {
+    username: "gandalf"
+    name: "Gandalf the Grey"
+    roles: [Instructor, Trainee]
+  }) {
+    __typename
+  }
+  frodo: registerUser(input: {
+    username: "frodo"
+    name: "Frodo Baggins"
+    roles: [Trainee]
+  }) {
+    __typename
+  }
+  sam: registerUser(input: {
+    username: "sam"
+    name: "Samwise Gamgee"
+    roles: [Trainee]
+  }) {
+    __typename
+  }
+  merry: registerUser(input: {
+    username: "merry"
+    name: "Merry Brandybuck"
+    roles: [Trainee]
+  }) {
+    __typename
+  }
+  pippin: registerUser(input: {
+    username: "pippin"
+    name: "Pippin Took"
+    roles: [Trainee]
+  }) {
+    __typename
+  }
+  warpac1: registerWearable(input: {
+    wearableId: "warpac1"
+  }) {
+    __typename
+  }
+  warpac2: registerWearable(input: {
+    wearableId: "warpac2"
+  }) {
+    __typename
+  }
+  warpac3: registerWearable(input: {
+    wearableId: "warpac3"
+  }) {
+    __typename
+  }
+  warpac4: registerWearable(input: {
+    wearableId: "warpac4"
+  }) {
+    __typename
+  }
+  drone: registerDevice(input: {
+    deviceId: "drone"
+    type: VirtualDrone
+  }) {
+    __typename
+  }
+  target1: registerDevice(input: {
+    deviceId: "target1"
+    type: ProTargit
+  }) {
+    __typename
+  }
+  target2: registerDevice(input: {
+    deviceId: "target2"
+    type: ProTargit
+  }) {
+    __typename
+  }
+  startSession(input: {
+    sessionId: $sessionId
+    policyId: "testPolicy_01"
+    instructor: "gandalf"
+    trainees: [
+      {
+        username: "frodo"
+      	wearableId: "warpac1"
+      }
+      {
+        username: "sam"
+      	wearableId: "warpac2"
+      }
+      {
+        username: "merry"
+      	wearableId: "warpac3"
+      }
+      {
+        username: "pippin"
+      	wearableId: "warpac4"
+      }
+    ]
+  }) {
+    session: __typename
+  }
+}
