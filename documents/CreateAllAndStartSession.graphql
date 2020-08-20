@@ -87,7 +87,7 @@ mutation CreateAllAndStartSession($sessionId: ID!) {
   }) {
     __typename
   }
-  startSession(input: {
+  initiateSession(input: {
     sessionId: $sessionId
     policyId: "testPolicy_01"
     instructor: "gandalf"
@@ -111,5 +111,17 @@ mutation CreateAllAndStartSession($sessionId: ID!) {
     ]
   }) {
     session: __typename
+  }
+  ack1: ackSession(input: { sessionId: $sessionId, wearableId: "warpac1" }) {
+    __typename
+  }
+  ack2: ackSession(input: { sessionId: $sessionId, wearableId: "warpac2" }) {
+    __typename
+  }
+  ack3: ackSession(input: { sessionId: $sessionId, wearableId: "warpac3" }) {
+    __typename
+  }
+  ack4: ackSession(input: { sessionId: $sessionId, wearableId: "warpac4" }) {
+    __typename
   }
 }
