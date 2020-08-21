@@ -37,7 +37,7 @@ websocket_logger.setLevel(level=logging.WARNING)
 Vec2 = namedtuple('Vec2', ['x', 'y'])
 MIN_POS = Vec2(80, 80)  # @HARDCODE
 MAX_POS = Vec2(1240, 760)  # @HARDCODE
-UPDATE_FREQUENCY = 5  # Hz
+UPDATE_FREQUENCY = 5.0  # Hz
 
 class Entity:
     def __init__(self, id_):
