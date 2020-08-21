@@ -59,10 +59,11 @@ class Target(Entity):
         self.twist_rate = 25  # degrees / sec
 
     def update(self, dt):
-        if not self.flip:
-            if self.target_twist == self.twist:
-                self.target_twist = 0 if self.twist == 360 else 360
-            self.twist = interp_to(self.twist, self.target_twist, dt, self.twist_rate)
+        if self.flip:
+            return None
+        if self.target_twist == self.twist:
+            self.target_twist = 0 if self.twist == 360 else 360
+        self.twist = interp_to(self.twist, self.target_twist, dt, self.twist_rate)
         return {
             "actuationId": str(uuid.uuid4()),
             "datetime": datetime.utcnow().isoformat(timespec='milliseconds') + "Z",
@@ -150,6 +151,8 @@ async def handle_entities(session):
         await asyncio.sleep(dt)
         for entity in entities:
             variables = entity.update(dt)
+            if variables is None:
+                continue
             await send_mutation(session, entity.document, variables)
 
 
