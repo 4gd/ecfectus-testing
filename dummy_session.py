@@ -146,13 +146,13 @@ class Soldier(Entity):
             "y": randint(0, 1080),
             "radius": 0  # To be removed in the backend
         }
-        output["$instantaneousHeartRate"] = {
+        output["instantaneousHeartRate"] = {
             "measurementId": measurementId,
             "time": time,
             "deviceId": deviceId + ".bodytrak",
             "hr": randint(69, 100)
         }
-        output["$coreBodyTemperature"] = {
+        output["coreBodyTemperature"] = {
             "measurementId": measurementId,
             "time": time,
             "deviceId": deviceId + ".bodytrak",
