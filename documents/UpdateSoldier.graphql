@@ -1,10 +1,23 @@
-mutation UpdateSoldier($measurementId: ID!, $datetime: DateTime!, $pozyxId: ID!, $x: Int!, $y: Int!, $pupilId: ID!, $degrees: Int!) {
-  position: postMeasurement(input: {soldierPosition: {measurementId: $measurementId, time: $datetime, deviceId: $pozyxId, x: $x, y: $y, z: 0}}) {
-    measurements {
-      __typename
-    }
-  }
-  headPosition: postMeasurement(input: {headPosition: {measurementId: $measurementId, time: $datetime, deviceId: $pupilId, degrees: $degrees}}) {
+mutation UpdateSoldier(
+  $instantaneousHeartRate: InstantaneousHeartRateInput,
+  $coreBodyTemperature: CoreBodyTemperatureInput,
+  $gazePosition: GazePositionInput,
+  $headPosition: HeadPositionInput,
+  $gunDirection: GunDirectionInput,
+  $gunOrientation: GunOrientationInput,
+  $dischargeDetection: DischargeDetectionInput,
+  $soldierPosition: SoldierPositionInput
+) {
+  postMeasurement(input: {
+    instantaneousHeartRate: $instantaneousHeartRate,
+    coreBodyTemperature: $coreBodyTemperature,
+    gazePosition: $gazePosition,
+    headPosition: $headPosition,
+    gunDirection: $gunDirection,
+    gunOrientation: $gunOrientation,
+    dischargeDetection: $dischargeDetection,
+    soldierPosition: $soldierPosition,
+  }) {
     measurements {
       __typename
     }

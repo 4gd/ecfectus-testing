@@ -28,7 +28,6 @@ from gql.transport.websockets import log as websocket_logger
 from documents import *
 from util import API_URL, interp_to, send_mutation
 
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 logger.setLevel(level=logging.INFO)
@@ -39,6 +38,7 @@ MIN_POS = Vec2(80, 80)  # @HARDCODE
 MAX_POS = Vec2(1240, 760)  # @HARDCODE
 UPDATE_FREQUENCY = 5.0  # Hz
 
+
 class Entity:
     def __init__(self, id_):
         self.id_ = id_
@@ -48,7 +48,6 @@ class Entity:
 
 
 class Target(Entity):
-
     document = update_target_twist
 
     def __init__(self, id_, flip=False, twist=None, target_twist=None):
@@ -73,7 +72,6 @@ class Target(Entity):
 
 
 class Soldier(Entity):
-
     document = update_soldier
     # @HARDCODED
     username_to_wearable_id = {
@@ -96,7 +94,7 @@ class Soldier(Entity):
         """Update state and return new mutation variables"""
         # If devices have differnt update rates will want to split this stuff out
         # will break if initital position outside of limits
-        x = self.pos.x + self.vel.x * dt 
+        x = self.pos.x + self.vel.x * dt
         vx, vy = self.vel
         if x > MAX_POS.x:
             x = MAX_POS.x - (x - MAX_POS.x)
@@ -104,7 +102,7 @@ class Soldier(Entity):
         elif x < MIN_POS.x:
             x = MIN_POS.x + (MIN_POS.x - x)
             vx = abs(vx)
-        y = self.pos.y + self.vel.y * dt 
+        y = self.pos.y + self.vel.y * dt
         if y > MAX_POS.y:
             y = MAX_POS.y - (y - MAX_POS.y)
             vy = -abs(vy)
@@ -113,20 +111,32 @@ class Soldier(Entity):
             vy = abs(vy)
         # if x > MAX_POS.x or x < MIN_POS.x:
         # if y > MAX_POS.y or y < MIN_POS.y:
-        self.pos = Vec2(x, y) 
+        self.pos = Vec2(x, y)
         self.vel = Vec2(vx, vy)
 
         if self.head_target_position == self.head_position:
             self.head_target_position = 0 if self.head_position == 360 else 360
         self.head_position = interp_to(self.head_position, self.head_target_position, dt, self.head_speed)
+
+        measurementId = str(uuid.uuid4())
+        time = datetime.utcnow().isoformat(timespec='milliseconds') + "Z"
+        deviceId = self.username_to_wearable_id[self.username]
+
         return {
-            "measurementId": str(uuid.uuid4()),
-            "datetime": datetime.utcnow().isoformat(timespec='milliseconds') + "Z",
-            "pozyxId": self.username_to_wearable_id[self.username] + ".pozyx",
-            "x": self.pos.x * 10,  # convert to mm - should probs just do simulation in mm
-            "y": self.pos.y * 10,
-            "pupilId": self.username_to_wearable_id[self.username] + ".pupil",
-            "degrees": self.head_position
+            "soldierPosition": {
+                "measurementId": measurementId,
+                "time": time,
+                "deviceId": deviceId + ".pozyx",
+                "x": self.pos.x * 10,  # convert to mm - should probs just do simulation in mm
+                "y": self.pos.y * 10,
+                "z": 0
+            },
+            "headPosition": {
+                "measurementId": measurementId,
+                "time": time,
+                "deviceId": deviceId + ".pupil",
+                "degrees": self.head_position
+            }
         }
 
 
@@ -189,6 +199,7 @@ async def main():
         # )
         asyncio.create_task(handle_entities(session))
         await handle_subscriptions(session)
+
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
