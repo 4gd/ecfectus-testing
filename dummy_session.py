@@ -138,6 +138,26 @@ class Soldier(Entity):
             "deviceId": deviceId + ".pupil",
             "degrees": self.head_position
         }
+        output["gazeDirection"] = {
+            "measurementId": measurementId,
+            "time": time,
+            "deviceId": deviceId + ".pupil",
+            "x": randint(0, 1088),
+            "y": randint(0, 1080),
+            "radius": 0  # To be removed in the backend
+        }
+        output["$instantaneousHeartRate"] = {
+            "measurementId": measurementId,
+            "time": time,
+            "deviceId": deviceId + ".bodytrak",
+            "hr": randint(69, 100)
+        }
+        output["$coreBodyTemperature"] = {
+            "measurementId": measurementId,
+            "time": time,
+            "deviceId": deviceId + ".bodytrak",
+            "cbt": randint(36, 39)
+        }
         output["gunDirection"] = {
             "measurementId": measurementId,
             "time": time,
