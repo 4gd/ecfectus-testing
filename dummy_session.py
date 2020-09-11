@@ -118,26 +118,40 @@ class Soldier(Entity):
             self.head_target_position = 0 if self.head_position == 360 else 360
         self.head_position = interp_to(self.head_position, self.head_target_position, dt, self.head_speed)
 
+        output = {}
+
         measurementId = str(uuid.uuid4())
         time = datetime.utcnow().isoformat(timespec='milliseconds') + "Z"
         deviceId = self.username_to_wearable_id[self.username]
 
-        return {
-            "soldierPosition": {
-                "measurementId": measurementId,
-                "time": time,
-                "deviceId": deviceId + ".pozyx",
-                "x": self.pos.x * 10,  # convert to mm - should probs just do simulation in mm
-                "y": self.pos.y * 10,
-                "z": 0
-            },
-            "headPosition": {
-                "measurementId": measurementId,
-                "time": time,
-                "deviceId": deviceId + ".pupil",
-                "degrees": self.head_position
-            }
+        output["soldierPosition"] = {
+            "measurementId": measurementId,
+            "time": time,
+            "deviceId": deviceId + ".pozyx",
+            "x": self.pos.x * 10,  # convert to mm - should probs just do simulation in mm
+            "y": self.pos.y * 10,
+            "z": 0
         }
+        output["headPosition"] = {
+            "measurementId": measurementId,
+            "time": time,
+            "deviceId": deviceId + ".pupil",
+            "degrees": self.head_position
+        }
+        output["gunDirection"] = {
+            "measurementId": measurementId,
+            "time": time,
+            "deviceId": deviceId + ".arc",
+            "degrees": self.head_position
+        }
+        if randint(0, 100) < 20:
+            output["dischargeDetection"] = {
+                "measurementId": measurementId,
+                "time": time,
+                "deviceId": deviceId + ".arc"
+            }
+
+        return output
 
 
 async def handle_subscriptions(session):
