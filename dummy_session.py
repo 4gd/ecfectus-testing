@@ -14,12 +14,14 @@ query ideally.
 """
 import asyncio
 import logging
+import math
+import random
 import sys
+import time
 import uuid
 from collections import namedtuple
 from datetime import datetime
 from pprint import pformat
-from random import randint
 
 from gql import Client, WebsocketsTransport, AIOHTTPTransport
 from gql.transport.exceptions import TransportQueryError
@@ -52,7 +54,7 @@ class Target(Entity):
 
     def __init__(self, id_, flip=False, twist=None, target_twist=None):
         super().__init__(id_)
-        self.twist = twist if twist else randint(0, 360)  # [0, 360)
+        self.twist = twist if twist else random.randint(0, 360)  # [0, 360)
         self.flip = flip
         self.target_twist = target_twist if target_twist else 0
         self.twist_rate = 25  # degrees / sec
@@ -86,14 +88,16 @@ class Soldier(Entity):
         self.username = username  # duplicated with id
         self.pos = Vec2(*pos)
         self.vel = Vec2(*vel)
-        self.head_position = randint(0, 360)  # [0, 360) world space
+        self.head_position = random.randint(0, 360)  # [0, 360) world space
         self.head_target_position = 0
         self.head_speed = 50  # degrees / sec
+        
+        self.gun_pitch_yaw = Vec2(random.uniform(-90, 90), random.uniform(-180, 180))
 
     def update(self, dt):
         """Update state and return new mutation variables"""
         # If devices have differnt update rates will want to split this stuff out
-        # will break if initital position outside of limits
+        # This will break if initital position outside of limits
         x = self.pos.x + self.vel.x * dt
         vx, vy = self.vel
         if x > MAX_POS.x:
@@ -109,8 +113,6 @@ class Soldier(Entity):
         elif y < MIN_POS.y:
             y = MIN_POS.y + (MIN_POS.y - y)
             vy = abs(vy)
-        # if x > MAX_POS.x or x < MIN_POS.x:
-        # if y > MAX_POS.y or y < MIN_POS.y:
         self.pos = Vec2(x, y)
         self.vel = Vec2(vx, vy)
 
@@ -118,15 +120,18 @@ class Soldier(Entity):
             self.head_target_position = 0 if self.head_position == 360 else 360
         self.head_position = interp_to(self.head_position, self.head_target_position, dt, self.head_speed)
 
-        output = {}
+        new_pitch = 60 * math.sin(time.time())
+        new_yaw = 45 * math.sin(time.time()) + self.head_position
+        self.gun_pitch_yaw = Vec2(new_pitch, new_yaw)
 
+        output = {}
         measurementId = str(uuid.uuid4())
-        time = datetime.utcnow().isoformat(timespec='milliseconds') + "Z"
+        measurement_time = datetime.utcnow().isoformat(timespec='milliseconds') + "Z"
         deviceId = self.username_to_wearable_id[self.username]
 
         output["soldierPosition"] = {
             "measurementId": measurementId,
-            "time": time,
+            "time": measurement_time,
             "deviceId": deviceId + ".pozyx",
             "x": self.pos.x * 10,  # convert to mm - should probs just do simulation in mm
             "y": self.pos.y * 10,
@@ -134,40 +139,48 @@ class Soldier(Entity):
         }
         output["headPosition"] = {
             "measurementId": measurementId,
-            "time": time,
+            "time": measurement_time,
             "deviceId": deviceId + ".pupil",
             "degrees": self.head_position
         }
         output["gazeDirection"] = {
             "measurementId": measurementId,
-            "time": time,
+            "time": measurement_time,
             "deviceId": deviceId + ".pupil",
-            "x": randint(0, 1088),
-            "y": randint(0, 1080),
+            "x": random.randint(0, 1088),
+            "y": random.randint(0, 1080),
             "radius": 0  # To be removed in the backend
         }
         output["instantaneousHeartRate"] = {
             "measurementId": measurementId,
-            "time": time,
+            "time": measurement_time,
             "deviceId": deviceId + ".bodytrak",
-            "hr": randint(69, 100)
+            "hr": random.randint(69, 100)
         }
         output["coreBodyTemperature"] = {
             "measurementId": measurementId,
-            "time": time,
+            "time": measurement_time,
             "deviceId": deviceId + ".bodytrak",
-            "cbt": randint(36, 39)
+            "cbt": random.randint(36, 39)
         }
         output["gunDirection"] = {
             "measurementId": measurementId,
-            "time": time,
+            "time": measurement_time,
             "deviceId": deviceId + ".arc",
-            "degrees": self.head_position
+            "degrees": int(self.gun_pitch_yaw[1])
         }
-        if randint(0, 100) < 20:
+        output["gunOrientation"] = {
+            "measurementId": measurementId,
+            "time": measurement_time,
+            "deviceId": deviceId + ".arc",
+            "x": 0,
+            "y": self.gun_pitch_yaw[0],
+            "z": self.gun_pitch_yaw[1]
+        }
+        if random.randint(0, 100) < 20:
             output["dischargeDetection"] = {
                 "measurementId": measurementId,
-                "time": time,
+                "time": measurement_time,
                 "deviceId": deviceId + ".arc"
             }
 
@@ -191,13 +204,17 @@ async def handle_entities(session):
     entities = [frodo, sam, merry, pippin, target_1, target_2]
     logger.info(f'Updating entity info for: {entities}')
     dt = 1 / UPDATE_FREQUENCY
-    while True:
-        await asyncio.sleep(dt)
+
+    async def update():
         for entity in entities:
             variables = entity.update(dt)
             if variables is None:
                 continue
             await send_mutation(session, entity.document, variables)
+
+    while True:
+        await asyncio.sleep(dt)
+        asyncio.create_task(update())
 
 
 async def main():
