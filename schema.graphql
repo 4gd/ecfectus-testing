@@ -177,7 +177,6 @@ type GazePosition implements Event & Measurement & AssignedMeasurement {
   device: Device
   session: Session
   trainee: SessionTrainee
-  radius: Int!
   x: Int!
   y: Int!
 }
@@ -186,7 +185,6 @@ input GazePositionInput {
   measurementId: ID!
   time: DateTime!
   deviceId: ID!
-  radius: Int!
   x: Int!
   y: Int!
 }
