@@ -148,8 +148,7 @@ class Soldier(Entity):
             "time": measurement_time,
             "deviceId": deviceId + ".pupil",
             "x": random.randint(0, 1088),
-            "y": random.randint(0, 1080),
-            "radius": 0  # To be removed in the backend
+            "y": random.randint(0, 1080)
         }
         output["instantaneousHeartRate"] = {
             "measurementId": measurementId,
