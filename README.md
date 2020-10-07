@@ -23,7 +23,7 @@ replace `python` with the correct binary file):
 
 Based on the above, make sure to use the correct Python binary in place
 of `python` below.  E.g.: if `python` is actually version `2.7`, but
-`python3` is correct, use `python -m venv venv`.
+`python3` is correct, use `python3 -m venv venv`.
 
 - Create and activate venv:
   - `python -m venv venv`
