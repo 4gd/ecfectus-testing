@@ -1,3 +1,12 @@
+input AckSessionInput {
+  sessionId: ID!
+  wearableId: ID!
+}
+
+type AckSessionPayload {
+  session: Session
+}
+
 input ActuateInput {
   targetTwist: TargetTwistInput
   targetDrop: TargetDropInput
@@ -22,16 +31,13 @@ interface Actuation {
 }
 
 type Actuator {
-  """"""
   actuationType: String!
 }
 
 input AddBookmarkInput {
-  """"""
   sessionId: ID!
-
-  """"""
-  time: DateTime!
+  type: BookmarkType!
+  time: DateTime
 }
 
 type AddBookmarkPayload {
@@ -47,8 +53,14 @@ interface AssignedMeasurement {
 }
 
 type Bookmark {
-  """"""
   time: DateTime!
+  type: BookmarkType!
+}
+
+enum BookmarkType {
+  Red
+  Amber
+  Green
 }
 
 type CoreBodyTemperature implements Event & Measurement & AssignedMeasurement {
@@ -71,24 +83,23 @@ input CoreBodyTemperatureInput {
 scalar DateTime
 
 type Device {
-  """"""
   deviceId: ID!
-
-  """"""
-  type: DeviceType!
+  type: DeviceType
   sensors: [Sensor]
   actuators: [Actuator]
 }
 
 enum DeviceType {
-  ARC
+  ArcM4
+  ArcM9
   Pupil
   Bodytrak
   Pozyx
-  ProTargit
-  SimStrikerDetector
   Clarius
+  LightSwitch
+  Door
   Speaker
+  SimStriker
   VirtualDrone
   VirtualSniper
 }
@@ -102,6 +113,32 @@ type DischargeDetection implements Event & Measurement & AssignedMeasurement {
 }
 
 input DischargeDetectionInput {
+  measurementId: ID!
+  time: DateTime!
+  deviceId: ID!
+}
+
+type DoorClosedDetection implements Event & Measurement {
+  measurementId: ID!
+  time: DateTime!
+  device: Device
+  session: Session
+}
+
+input DoorClosedDetectionInput {
+  measurementId: ID!
+  time: DateTime!
+  deviceId: ID!
+}
+
+type DoorOpenDetection implements Event & Measurement {
+  measurementId: ID!
+  time: DateTime!
+  device: Device
+  session: Session
+}
+
+input DoorOpenDetectionInput {
   measurementId: ID!
   time: DateTime!
   deviceId: ID!
@@ -150,7 +187,6 @@ enum Echelon {
 }
 
 input EndSessionInput {
-  """"""
   sessionId: ID!
 }
 
@@ -163,10 +199,11 @@ interface Event {
 }
 
 enum FacilityDeviceType {
-  ProTargit
-  SimStrikerDetector
   Clarius
+  LightSwitch
+  Door
   Speaker
+  SimStriker
   VirtualDrone
   VirtualSniper
 }
@@ -271,6 +308,17 @@ input HolsterDetectionInput {
   deviceId: ID!
 }
 
+input InitiateSessionInput {
+  sessionId: ID!
+  policyId: ID!
+  instructor: String!
+  trainees: [SessionTraineeInput!]!
+}
+
+type InitiateSessionPayload {
+  session: Session
+}
+
 type InstantaneousHeartRate implements Event & Measurement & AssignedMeasurement {
   measurementId: ID!
   time: DateTime!
@@ -288,10 +336,7 @@ input InstantaneousHeartRateInput {
 }
 
 type Layout {
-  """"""
   layoutId: ID!
-
-  """"""
   name: String!
 }
 
@@ -351,6 +396,32 @@ input LightStrobeInput {
   mode: Boolean!
 }
 
+type LightSwitchOff implements Event & Measurement {
+  measurementId: ID!
+  time: DateTime!
+  device: Device
+  session: Session
+}
+
+input LightSwitchOffInput {
+  measurementId: ID!
+  time: DateTime!
+  deviceId: ID!
+}
+
+type LightSwitchOn implements Event & Measurement {
+  measurementId: ID!
+  time: DateTime!
+  device: Device
+  session: Session
+}
+
+input LightSwitchOnInput {
+  measurementId: ID!
+  time: DateTime!
+  deviceId: ID!
+}
+
 type MagChangeDetection implements Event & Measurement & AssignedMeasurement {
   measurementId: ID!
   time: DateTime!
@@ -393,7 +464,8 @@ type Mutation {
   registerDevice(input: RegisterDeviceInput!): RegisterDevicePayload
   registerLayout(input: RegisterLayoutInput!): RegisterLayoutPayload
   registerPolicy(input: RegisterPolicyInput!): RegisterPolicyPayload
-  startSession(input: StartSessionInput!): StartSessionPayload
+  initiateSession(input: InitiateSessionInput!): InitiateSessionPayload
+  ackSession(input: AckSessionInput!): AckSessionPayload
   endSession(input: EndSessionInput!): EndSessionPayload
   addBookmark(input: AddBookmarkInput!): AddBookmarkPayload
   postMeasurement(input: PostMeasurementInput!): PostMeasurementPayload
@@ -401,7 +473,6 @@ type Mutation {
 }
 
 type Organization {
-  """"""
   name: String!
   echelon: Echelon!
   parent: Organization
@@ -425,10 +496,7 @@ input PhysiologicalStrainIndexInput {
 }
 
 type Policy {
-  """"""
   policyId: ID!
-
-  """"""
   name: String!
   layout: Layout
 }
@@ -448,9 +516,12 @@ input PostMeasurementInput {
   magChangeDetection: MagChangeDetectionInput
   soldierPosition: SoldierPositionInput
   targetHitDetection: TargetHitDetectionInput
-  targetMotionDetection: TargetMotionDetectionInput
-  targetSoundDetection: TargetSoundDetectionInput
-  targetFlashBangDetection: TargetFlashBangDetectionInput
+  targetStateChange: TargetStateChangeInput
+  targetPositionChange: TargetPositionChangeInput
+  lightSwitchOn: LightSwitchOnInput
+  lightSwitchOff: LightSwitchOffInput
+  doorOpenDetection: DoorOpenDetectionInput
+  doorClosedDetection: DoorClosedDetectionInput
   dronePosition: DronePositionInput
   sniperPosition: SniperPositionInput
 }
@@ -472,11 +543,7 @@ type Query {
 
 type Rank {
   rankCode: RankCode!
-
-  """"""
   name: String!
-
-  """"""
   abbreviation: String!
 }
 
@@ -504,7 +571,6 @@ enum RankCode {
 }
 
 input RegisterDeviceInput {
-  """"""
   deviceId: ID!
   type: FacilityDeviceType
 }
@@ -514,10 +580,7 @@ type RegisterDevicePayload {
 }
 
 input RegisterLayoutInput {
-  """"""
   layoutId: ID!
-
-  """"""
   name: String!
 }
 
@@ -526,7 +589,6 @@ type RegisterLayoutPayload {
 }
 
 input RegisterOrganizationInput {
-  """"""
   name: String!
   echelon: Echelon!
   parent: String
@@ -537,13 +599,8 @@ type RegisterOrganizationPayload {
 }
 
 input RegisterPolicyInput {
-  """"""
   policyId: ID!
-
-  """"""
   name: String!
-
-  """"""
   layoutId: ID!
 }
 
@@ -552,11 +609,9 @@ type RegisterPolicyPayload {
 }
 
 input RegisterUserInput {
-  """"""
   username: String!
-
-  """"""
   name: String!
+  initials: String
   organization: String
   rankCode: RankCode
   roles: [UserRole!]!
@@ -567,8 +622,8 @@ type RegisterUserPayload {
 }
 
 input RegisterWearableInput {
-  """"""
   wearableId: ID!
+  pozyxTagId: String
 }
 
 type RegisterWearablePayload {
@@ -576,21 +631,16 @@ type RegisterWearablePayload {
 }
 
 type Sensor {
-  """"""
   measurementType: String!
+  sensorId: String
 }
 
 type Session {
-  """"""
   sessionId: ID!
-
-  """"""
-  startTime: DateTime!
-
-  """"""
+  status: SessionStatus!
+  initTime: DateTime!
+  startTime: DateTime
   endTime: DateTime
-
-  """"""
   instructor: User
   policy: Policy
   layout: Layout
@@ -598,16 +648,25 @@ type Session {
   bookmarks: [Bookmark]
 }
 
+type SessionEvent implements Event {
+  time: DateTime!
+  session: Session
+}
+
+enum SessionStatus {
+  Initiated
+  Started
+  Ended
+}
+
 type SessionTrainee {
   user: User
   wearable: Wearable
+  ackTime: DateTime
 }
 
 input SessionTraineeInput {
-  """"""
   username: String!
-
-  """"""
   wearableId: ID!
 }
 
@@ -665,24 +724,9 @@ input SpeakerPlaySoundInput {
   name: String!
 }
 
-input StartSessionInput {
-  """"""
-  sessionId: ID!
-
-  """"""
-  policyId: ID!
-
-  """"""
-  instructor: String!
-  trainees: [SessionTraineeInput!]!
-}
-
-type StartSessionPayload {
-  session: Session
-}
-
 type Subscription {
   events: Event
+  replay(sessionId: ID!): Event
 }
 
 type SystemEvent implements Event {
@@ -722,19 +766,6 @@ input TargetFireInput {
   timeMillis: Int!
 }
 
-type TargetFlashBangDetection implements Event & Measurement {
-  measurementId: ID!
-  time: DateTime!
-  device: Device
-  session: Session
-}
-
-input TargetFlashBangDetectionInput {
-  measurementId: ID!
-  time: DateTime!
-  deviceId: ID!
-}
-
 type TargetHitDetection implements Event & Measurement {
   measurementId: ID!
   time: DateTime!
@@ -748,19 +779,6 @@ input TargetHitDetectionInput {
   time: DateTime!
   deviceId: ID!
   zone: Int!
-}
-
-type TargetMotionDetection implements Event & Measurement {
-  measurementId: ID!
-  time: DateTime!
-  device: Device
-  session: Session
-}
-
-input TargetMotionDetectionInput {
-  measurementId: ID!
-  time: DateTime!
-  deviceId: ID!
 }
 
 type TargetPlaySound implements Event & Actuation {
@@ -778,19 +796,41 @@ input TargetPlaySoundInput {
   name: String!
 }
 
-type TargetSoundDetection implements Event & Measurement {
+type TargetPositionChange implements Event & Measurement {
   measurementId: ID!
   time: DateTime!
   device: Device
   session: Session
-  level: Float!
+  degrees: Int!
 }
 
-input TargetSoundDetectionInput {
+input TargetPositionChangeInput {
   measurementId: ID!
   time: DateTime!
   deviceId: ID!
-  level: Float!
+  degrees: Int!
+}
+
+enum TargetState {
+  Idle
+  Alert
+  Attacking
+  Killed
+}
+
+type TargetStateChange implements Event & Measurement {
+  measurementId: ID!
+  time: DateTime!
+  device: Device
+  session: Session
+  state: TargetState!
+}
+
+input TargetStateChangeInput {
+  measurementId: ID!
+  time: DateTime!
+  deviceId: ID!
+  state: TargetState!
 }
 
 type TargetTwist implements Event & Actuation {
@@ -809,15 +849,11 @@ input TargetTwistInput {
 }
 
 type User {
-  """"""
   username: String!
-
-  """"""
   name: String!
+  initials: String!
   rank: Rank
   organization: Organization
-
-  """"""
   enabled: Boolean!
   roles: [UserRole!]
 }
@@ -829,10 +865,8 @@ enum UserRole {
 }
 
 type Wearable {
-  """"""
   wearableId: ID!
-
-  """"""
   enabled: Boolean!
-  devices: [Device!]
+  devices(type: DeviceType): [Device!]
 }
+

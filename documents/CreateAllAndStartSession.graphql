@@ -77,13 +77,13 @@ mutation CreateAllAndStartSession($sessionId: ID!) {
   }
   target1: registerDevice(input: {
     deviceId: "target1"
-    type: ProTargit
+    type: SimStriker
   }) {
     __typename
   }
   target2: registerDevice(input: {
     deviceId: "target2"
-    type: ProTargit
+    type: SimStriker
   }) {
     __typename
   }
