@@ -165,13 +165,13 @@ class Soldier(Entity):
         output["gunDirection"] = {
             "measurementId": measurementId,
             "time": measurement_time,
-            "deviceId": deviceId + ".arc",
+            "deviceId": deviceId + ".arcm4",
             "degrees": int(self.gun_pitch_yaw[1])
         }
         output["gunOrientation"] = {
             "measurementId": measurementId,
             "time": measurement_time,
-            "deviceId": deviceId + ".arc",
+            "deviceId": deviceId + ".arcm4",
             "x": 0,
             "y": self.gun_pitch_yaw[0],
             "z": self.gun_pitch_yaw[1]
@@ -180,7 +180,7 @@ class Soldier(Entity):
             output["dischargeDetection"] = {
                 "measurementId": measurementId,
                 "time": measurement_time,
-                "deviceId": deviceId + ".arc"
+                "deviceId": deviceId + ".arcm4"
             }
 
         return output
