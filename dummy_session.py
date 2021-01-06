@@ -137,7 +137,7 @@ class Soldier(Entity):
             "y": self.pos.y * 10,
             "z": 0
         }
-        output["headPosition"] = {
+        output["headOrientation"] = {
             "measurementId": measurementId,
             "time": measurement_time,
             "deviceId": deviceId + ".pupil",
