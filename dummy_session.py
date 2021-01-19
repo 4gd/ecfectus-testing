@@ -162,19 +162,11 @@ class Soldier(Entity):
             "deviceId": deviceId + ".bodytrak",
             "cbt": random.randint(36, 39)
         }
-        output["gunDirection"] = {
-            "measurementId": measurementId,
-            "time": measurement_time,
-            "deviceId": deviceId + ".arcm4",
-            "degrees": int(self.gun_pitch_yaw[1])
-        }
         output["gunOrientation"] = {
             "measurementId": measurementId,
             "time": measurement_time,
             "deviceId": deviceId + ".arcm4",
-            "x": 0,
-            "y": self.gun_pitch_yaw[0],
-            "z": self.gun_pitch_yaw[1]
+            "degrees": int(self.gun_pitch_yaw[1])
         }
         if random.randint(0, 100) < 20:
             output["dischargeDetection"] = {

@@ -3,7 +3,6 @@ mutation UpdateSoldier(
   $coreBodyTemperature: CoreBodyTemperatureInput,
   $gazePosition: GazePositionInput,
   $headOrientation: HeadOrientationInput,
-  $gunDirection: GunDirectionInput,
   $gunOrientation: GunOrientationInput,
   $dischargeDetection: DischargeDetectionInput,
   $soldierPosition: SoldierPositionInput
@@ -13,7 +12,6 @@ mutation UpdateSoldier(
     coreBodyTemperature: $coreBodyTemperature,
     gazePosition: $gazePosition,
     headOrientation: $headOrientation,
-    gunDirection: $gunDirection,
     gunOrientation: $gunOrientation,
     dischargeDetection: $dischargeDetection,
     soldierPosition: $soldierPosition,
