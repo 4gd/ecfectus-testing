@@ -67,7 +67,7 @@ class Target(Entity):
         self.twist = interp_to(self.twist, self.target_twist, dt, self.twist_rate)
         return {
             "actuationId": str(uuid.uuid4()),
-            "datetime": datetime.utcnow().isoformat(timespec='milliseconds') + "Z",
+            "datetime": datetime.utcnow().isoformat() + "Z",
             "deviceId": self.id_,
             "degrees": round(self.twist)
         }
@@ -126,7 +126,7 @@ class Soldier(Entity):
 
         output = {}
         measurementId = str(uuid.uuid4())
-        measurement_time = datetime.utcnow().isoformat(timespec='milliseconds') + "Z"
+        measurement_time = datetime.utcnow().isoformat() + "Z"
         deviceId = self.username_to_wearable_id[self.username]
 
         output["soldierPosition"] = {
