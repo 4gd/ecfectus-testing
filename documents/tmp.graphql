@@ -92,7 +92,7 @@ subscription {
             trainee {
                 user { username }
             }
-            degrees
+            radians
         }
         ... on TargetTwist {
             time
@@ -100,7 +100,7 @@ subscription {
                 type
                 deviceId
             }
-            degrees
+            radians
         }
     }
 }
