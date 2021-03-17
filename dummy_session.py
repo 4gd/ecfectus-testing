@@ -69,7 +69,7 @@ class Target(Entity):
             "actuationId": str(uuid.uuid4()),
             "datetime": datetime.utcnow().isoformat() + "Z",
             "deviceId": self.id_,
-            "degrees": round(self.twist)
+            "radians": math.radians(self.twist)
         }
 
 
@@ -141,7 +141,7 @@ class Soldier(Entity):
             "measurementId": measurementId,
             "time": measurement_time,
             "deviceId": deviceId + ".pupil",
-            "degrees": self.head_position
+            "radians": math.radians(self.head_position)
         }
         output["gazeDirection"] = {
             "measurementId": measurementId,
@@ -166,7 +166,7 @@ class Soldier(Entity):
             "measurementId": measurementId,
             "time": measurement_time,
             "deviceId": deviceId + ".arcm4",
-            "degrees": int(self.gun_pitch_yaw[1])
+            "radians": math.radians(self.gun_pitch_yaw[1])
         }
         if random.randint(0, 100) < 20:
             output["dischargeDetection"] = {
