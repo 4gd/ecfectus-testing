@@ -50,7 +50,7 @@ class Entity:
 
 
 class Target(Entity):
-    document = update_target_twist
+    document = update_target
 
     def __init__(self, id_, flip=False, twist=None, target_twist=None):
         super().__init__(id_)
@@ -63,14 +63,29 @@ class Target(Entity):
         if self.flip:
             return None
         if self.target_twist == self.twist:
-            self.target_twist = 0 if self.twist == 360 else 360
+            self.target_twist = 0 if self.twist == 2 * math.pi else 2 * math.pi
         self.twist = interp_to(self.twist, self.target_twist, dt, self.twist_rate)
-        return {
+
+        output = {}
+        measurement_id = str(uuid.uuid4())
+        measurement_time = datetime.utcnow().isoformat() + "Z"
+        deviceId = self.id_
+
+        output["$targetTwist"] = {
             "actuationId": str(uuid.uuid4()),
-            "datetime": datetime.utcnow().isoformat() + "Z",
+            "time": datetime.utcnow().isoformat() + "Z",
             "deviceId": self.id_,
             "radians": math.radians(self.twist)
         }
+        if random.randint(0, 100) < 20:
+            output["targetHitDetection"] = {
+                "measurementId": measurement_id,
+                "time": measurement_time,
+                "deviceId": deviceId,
+                "zone": random.randint(1, 5)
+            }
+
+        return output
 
 
 class Soldier(Entity):
@@ -125,12 +140,12 @@ class Soldier(Entity):
         self.gun_pitch_yaw = Vec2(new_pitch, new_yaw)
 
         output = {}
-        measurementId = str(uuid.uuid4())
+        measurement_id = str(uuid.uuid4())
         measurement_time = datetime.utcnow().isoformat() + "Z"
         deviceId = self.username_to_wearable_id[self.username]
 
         output["soldierPosition"] = {
-            "measurementId": measurementId,
+            "measurementId": measurement_id,
             "time": measurement_time,
             "deviceId": deviceId + ".pozyx",
             "x": self.pos.x * 10,  # convert to mm - should probs just do simulation in mm
@@ -138,39 +153,39 @@ class Soldier(Entity):
             "z": 0
         }
         output["headOrientation"] = {
-            "measurementId": measurementId,
+            "measurementId": measurement_id,
             "time": measurement_time,
             "deviceId": deviceId + ".pupil",
             "radians": math.radians(self.head_position)
         }
         output["gazeDirection"] = {
-            "measurementId": measurementId,
+            "measurementId": measurement_id,
             "time": measurement_time,
             "deviceId": deviceId + ".pupil",
             "x": random.randint(0, 1088),
             "y": random.randint(0, 1080)
         }
         output["instantaneousHeartRate"] = {
-            "measurementId": measurementId,
+            "measurementId": measurement_id,
             "time": measurement_time,
             "deviceId": deviceId + ".bodytrak",
             "hr": random.randint(69, 100)
         }
         output["coreBodyTemperature"] = {
-            "measurementId": measurementId,
+            "measurementId": measurement_id,
             "time": measurement_time,
             "deviceId": deviceId + ".bodytrak",
             "cbt": random.randint(36, 39)
         }
         output["gunOrientation"] = {
-            "measurementId": measurementId,
+            "measurementId": measurement_id,
             "time": measurement_time,
             "deviceId": deviceId + ".arcm4",
             "radians": math.radians(self.gun_pitch_yaw[1])
         }
         if random.randint(0, 100) < 20:
             output["dischargeDetection"] = {
-                "measurementId": measurementId,
+                "measurementId": measurement_id,
                 "time": measurement_time,
                 "deviceId": deviceId + ".arcm4"
             }

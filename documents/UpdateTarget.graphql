@@ -1,5 +1,17 @@
-mutation UpdateTargetTwist($actuationId: ID!, $datetime: DateTime!, $deviceId: ID!, $radians: Float!) {
-  actuate(input: {targetTwist: {actuationId: $actuationId, time: $datetime, deviceId: $deviceId, radians: $radians}}) {
+mutation UpdateTarget(
+  $targetHitDetection: TargetHitDetectionInput,
+  $targetTwist: TargetTwistInput
+) {
+  postMeasurement(input: {
+    targetHitDetection: $targetHitDetection
+  }) {
+    measurements {
+      __typename
+    }
+  }
+  actuate(input: {
+    targetTwist: $targetTwist
+  }) {
     actuations: __typename
   }
 }

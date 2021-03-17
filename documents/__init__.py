@@ -19,7 +19,7 @@ with open("documents/UpdateSoldier.graphql") as f:
     update_soldier = gql(f.read())
 
 with open("documents/UpdateTarget.graphql") as f:
-    update_target_twist = gql(f.read())
+    update_target = gql(f.read())
 
 with open("documents/Subscriptions.graphql") as f:
     subscriptions = gql(f.read())
