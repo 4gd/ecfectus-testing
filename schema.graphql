@@ -232,14 +232,14 @@ type GunDirection implements Event & Measurement & AssignedMeasurement {
   device: Device
   session: Session
   trainee: SessionTrainee
-  degrees: Int!
+  radians: Float!
 }
 
 input GunDirectionInput {
   measurementId: ID!
   time: DateTime!
   deviceId: ID!
-  degrees: Int!
+  radians: Float!
 }
 
 type GunOrientation implements Event & Measurement & AssignedMeasurement {
@@ -268,14 +268,14 @@ type HeadPosition implements Event & Measurement & AssignedMeasurement {
   device: Device
   session: Session
   trainee: SessionTrainee
-  degrees: Int!
+  radians: Float!
 }
 
 input HeadPositionInput {
   measurementId: ID!
   time: DateTime!
   deviceId: ID!
-  degrees: Int!
+  radians: Float!
 }
 
 type HeartRateVariability implements Event & Measurement & AssignedMeasurement {
@@ -517,7 +517,7 @@ input PostMeasurementInput {
   soldierPosition: SoldierPositionInput
   targetHitDetection: TargetHitDetectionInput
   targetStateChange: TargetStateChangeInput
-  targetPositionChange: TargetPositionChangeInput
+  targetOrientation: targetOrientationInput
   lightSwitchOn: LightSwitchOnInput
   lightSwitchOff: LightSwitchOffInput
   doorOpenDetection: DoorOpenDetectionInput
@@ -796,19 +796,19 @@ input TargetPlaySoundInput {
   name: String!
 }
 
-type TargetPositionChange implements Event & Measurement {
+type targetOrientation implements Event & Measurement {
   measurementId: ID!
   time: DateTime!
   device: Device
   session: Session
-  degrees: Int!
+  radians: Float!
 }
 
-input TargetPositionChangeInput {
+input targetOrientationInput {
   measurementId: ID!
   time: DateTime!
   deviceId: ID!
-  degrees: Int!
+  radians: Float!
 }
 
 enum TargetState {
@@ -838,14 +838,14 @@ type TargetTwist implements Event & Actuation {
   time: DateTime!
   device: Device
   session: Session
-  degrees: Int!
+  radians: Float!
 }
 
 input TargetTwistInput {
   actuationId: ID!
   time: DateTime!
   deviceId: ID!
-  degrees: Int!
+  radians: Float!
 }
 
 type User {

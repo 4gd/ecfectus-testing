@@ -1,8 +1,12 @@
 mutation UpdateTarget(
+  $targetStateChange: TargetStateChangeInput,
+  $targetOrientation: TargetOrientationInput,
   $targetHitDetection: TargetHitDetectionInput,
   $targetTwist: TargetTwistInput
 ) {
   postMeasurement(input: {
+    targetStateChange: $targetStateChange,
+    targetOrientation: $targetOrientation,
     targetHitDetection: $targetHitDetection
   }) {
     measurements {

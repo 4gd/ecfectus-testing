@@ -70,11 +70,18 @@ class Target(Entity):
         measurement_id = str(uuid.uuid4())
         measurement_time = datetime.utcnow().isoformat() + "Z"
         deviceId = self.id_
+        states = ["Idle", "Alert", "Attacking", "Killed"]
 
-        output["$targetTwist"] = {
-            "actuationId": str(uuid.uuid4()),
-            "time": datetime.utcnow().isoformat() + "Z",
+        output["targetTwist"] = {
+            "actuationId": measurement_id,
+            "time": measurement_time,
             "deviceId": self.id_,
+            "radians": math.radians(self.twist)
+        }
+        output["targetOrientation"] = {
+            "measurementId": measurement_id,
+            "time": measurement_time,
+            "deviceId": deviceId,
             "radians": math.radians(self.twist)
         }
         if random.randint(0, 100) < 20:
@@ -83,6 +90,13 @@ class Target(Entity):
                 "time": measurement_time,
                 "deviceId": deviceId,
                 "zone": random.randint(1, 5)
+            }
+        if random.randint(0, 100) < 5:
+            output["targetStateChange"] = {
+                "measurementId": measurement_id,
+                "time": measurement_time,
+                "deviceId": deviceId,
+                "state": states[random.randint(0, 3)]
             }
 
         return output
